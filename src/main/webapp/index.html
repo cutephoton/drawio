@@ -74,9 +74,11 @@
 				// ignore
 			}
 		}
+
+		var IS_DEV_MODE = !(urlParams['dev'] === undefined || urlParams['dev'] == '0');
 		
 		// Redirects page if required
-		if (urlParams['dev'] != '1')
+		if (!IS_DEV_MODE)
 		{
 			(function()
 			{
@@ -323,13 +325,24 @@
 		var t0 = new Date();
 
 		// Changes paths for local development environment
-		if (urlParams['dev'] == '1')
+		if (IS_DEV_MODE)
 		{
+			console.log("!! Developer Mode: " + urlParams['dev'] + "!!");
+
+			var mxDevHost = "devhost.jgraph.com";
+
+			if (urlParams['dev'] == 'auto') {
+				mxDevHost = document.location.host;
+			} else if (urlParams['dev'] != '1') {
+				mxDevHost = urlParams['dev'];
+			}
+			urlParams['dev']='1'; // reset this to avoid breaking everything else...
+
 			// Used to request grapheditor/mxgraph sources in dev mode
-			var mxDevUrl = document.location.protocol + '//devhost.jgraph.com/mxgraph2';
+			var mxDevUrl = document.location.protocol + '//' + mxDevHost + '/mxgraph2';
 			
 			// Used to request draw.io sources in dev mode
-			var drawDevUrl = document.location.protocol + '//devhost.jgraph.com/drawio/src/main/webapp/';
+			var drawDevUrl = document.location.protocol + '//' + mxDevHost + '/drawio/src/main/webapp/';
 			
 			if (document.location.protocol == 'file:')
 			{
